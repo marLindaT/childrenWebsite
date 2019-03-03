@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="Preschool kids apps">
+
+  <meta name="keywords" content="ABCs, counting, math, drawing">
+
+  <meta name="author" content="marLindaT">
+
+
+
+  <title>School Yard: Drawing Board</title>
+
+
+<style>
+/**********DESKTOP***********/
+@media only screen and (min-width: 769px) {
+/********  above screen width of 769 use these settings ***/
+ 
+  html {
+    background: pink;/*fallback color*/
+
+/*fill the entire background with a non repeating radial gradient*/
+    background:radial-gradient(white, purple, pink);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
+
+.container{
+  width: 100vw;
+  height: 100vh;
+
+
+}
+
+
+
+  }
+
+
+}
+</style>
+
+
+<style>
+
+
+
+#canvas{
+  background: white;
+  border: solid black 2px;
+}
+
+.drawBtn{
+  width: 85px;
+
+}
+
+#red{
+  background: red;
+}
+#green{
+  background: green;
+}
+#blue{
+  background: blue;
+}
+
+
+</style>
+
+
+
+<body onload="startup()">
+
+  <div id="container">
+
+    <canvas id="canvas" >
+
+      Your browser does not support canvas element.
+    </canvas>
+
+      <div id = "btnContainer">
+
+        <button id="clearBtn" class="drawBtn">CLEAR</button>
+
+        <button id="red" class="drawBtn">RED</button>
+
+        <button id="green" class="drawBtn">GREEN</button>
+
+        <button id="blue" class="drawBtn">BLUE</button>
+
+      </div>
+
+      <a href=index_kidsApp.html><button id="home">HOME</button></a>
+
+ 
+
+
+  </div>
+
+<script>
+
+const clearBtn = document.getElementById("clearBtn");
+
+const red = document.getElementById("red");
+
+const green = document.getElementById("green");
+
+const blue = document.getElementById("blue");
+
+
+const el = document.getElementById("canvas");
+
+const WIDTH = window.innerWidth * 0.8;
+const HEIGHT = window.innerHeight * 0.65;
+  el.width = WIDTH;
+  el.height = HEIGHT;
+
+const ctx = el.getContext("2d");
+  
+let color = "red";
+  
+//find a better way to select color mouse/touch event event Target?
+function redColor(){
+  color = "red"
+};
+function greenColor(){
+  color = "green"
+};
+function blueColor(){
+  color = "blue"
+};
+
+
+//event handlers
+
+
+
+function startup() {
+
+//fixing this should be able to use only one event listener
+  red.addEventListener("click", redColor, false);
+  green.addEventListener("click", greenColor, false);
+  blue.addEventListener("click", blueColor, false);
+
+  clearBtn.addEventListener("click", clear, false);  
+  
+  el.addEventListener("touchstart", handleStart, false);
+  el.addEventListener("touchend", handleEnd, false);
+  el.addEventListener("touchcancel", handleCancel, false);
+  el.addEventListener("touchmove", handleMove, false);
+  
+}
+
+//tracking touches
+
+let ongoingTouches =[];
+
+// reset the canvas
+function clear(){
+	ctx.clearRect(0,0,600,600);
+}
+
+//trim down touch event to only include indentifier and X,Y coordinates
+function copyTouch(touch) {
+  return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
+}
+
+
+
+function handleStart(evt) {
+//prevent mouse actions ie scrolling page
+  evt.preventDefault();
+//
+  let touches = evt.changedTouches;
+     
+  for (var i = 0; i < touches.length; i++) {
+   
+    ongoingTouches.push(copyTouch(touches[i]));
+
+    
+    ctx.beginPath();
+    ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    console.log(ongoingTouches);
+  }
+}
+
+
+//
+function handleMove(evt) {
+  evt.preventDefault();
+  
+  var touches = evt.changedTouches;
+
+  for (var i = 0; i < touches.length; i++) {
+    
+    var idx = ongoingTouchIndexById(touches[i].identifier);
+
+    if (idx >= 0) {
+
+      ctx.beginPath();
+      
+      ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+      
+      ctx.lineTo(touches[i].pageX, touches[i].pageY);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+
+      ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+     
+    } 
+  }
+}
+
+
+//
+function handleEnd(evt) {
+  evt.preventDefault();
+ 
+  
+  
+  var touches = evt.changedTouches;
+
+  for (var i = 0; i < touches.length; i++) {
+    
+    var idx = ongoingTouchIndexById(touches[i].identifier);
+
+    if (idx >= 0) {
+      ctx.lineWidth = 4;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+      ctx.lineTo(touches[i].pageX, touches[i].pageY);
+      ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4, 8, 8);  // and a square at the end
+      ongoingTouches.splice(idx, 1);  // remove it; we're done
+    }
+  }
+}
+
+//
+function handleCancel(evt) {
+  evt.preventDefault();
+  
+  var touches = evt.changedTouches;
+  
+  for (var i = 0; i < touches.length; i++) {
+    var idx = ongoingTouchIndexById(touches[i].identifier);
+    ongoingTouches.splice(idx, 1);  // remove it; we're done
+  }
+}
+
+
+
+
+
+//
+function ongoingTouchIndexById(idToFind) {
+  for (var i = 0; i < ongoingTouches.length; i++) {
+    var id = ongoingTouches[i].identifier;
+    
+    if (id == idToFind) {
+      return i;
+    }
+  }
+  return -1;    // not found
+}
+
+//
+
+
+
+
+
+</script>
+</body>
+</html>
