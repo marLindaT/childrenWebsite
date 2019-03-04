@@ -39,14 +39,37 @@
 
 
 }
-
-
-
   }
+
+</style>
+<style>
+/**********MEDIUM MOBILE***********/
+@media only screen and (max-width: 768px) {
+/********  above screen width of 769 use these settings ***/
+ 
+  html {
+    background: pink;/*fallback color*/
+
+/*fill the entire background with a non repeating radial gradient*/
+    background:radial-gradient(white, purple, pink);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
+
+.container{
+  width: 100vw;
+  height: 100vh;
 
 
 }
+  }
+
 </style>
+
+
+
 
 
 <style>
@@ -76,6 +99,7 @@
 
 </style>
 
+</head>
 
 
 <body onload="startup()">
@@ -87,7 +111,7 @@
       Your browser does not support canvas element.
     </canvas>
 
-      <div id = "btnContainer">
+      <div id = "colorbtnContainer">
 
         <button id="clearBtn" class="drawBtn">CLEAR</button>
 
@@ -98,6 +122,19 @@
         <button id="blue" class="drawBtn">BLUE</button>
 
       </div>
+      
+      <div id = "colorbtnContainer">
+      
+      <button id="fourpx" class="drawBtn">small</button>
+      
+      <button id="eightpx">Medium</button>
+      
+      <button id="twelvepx">LARGE</button>
+      
+      
+      </div>
+      
+      
 
       <a href=index_kidsApp.html><button id="home">HOME</button></a>
 
@@ -106,7 +143,11 @@
 
   </div>
 
+
+
 <script>
+
+//grab buttons for choosing color and erasing
 
 const clearBtn = document.getElementById("clearBtn");
 
@@ -116,19 +157,49 @@ const green = document.getElementById("green");
 
 const blue = document.getElementById("blue");
 
+// grab buttons for sizing linenwidth
+/*
+const fourpx = document.getElementById("fourpx");
+
+const eighhtpx = document.getElementById("eightpx");
+
+const twelvepx = document.getElementById("twelvepx");
+
+*/
 
 const el = document.getElementById("canvas");
 
-const WIDTH = window.innerWidth * 0.8;
-const HEIGHT = window.innerHeight * 0.65;
+//use if statement to  anWriter inability to use innerWidth
+let WIDTH;
+
+if(window.innerWidth!=0){
+ WIDTH = window.innerWidth * 0.8;
+}else{
+ WIDTH = 300;
+};
+
+let HEIGHT;
+
+if(window.innerHeight !=0){
+ HEIGHT = window.innerHeight * 0.65;
+}else{
+HEIGHT = 400;
+};
+
   el.width = WIDTH;
   el.height = HEIGHT;
+  
 
 const ctx = el.getContext("2d");
   
 let color = "red";
+
+let lineWidth = 4;
+
   
 //find a better way to select color mouse/touch event event Target?
+
+//functions to set line color 
 function redColor(){
   color = "red"
 };
@@ -139,6 +210,16 @@ function blueColor(){
   color = "blue"
 };
 
+//functions to set line width
+function smallLine(){
+	lineWidth = 4;
+};
+function mediumLine(){
+	lineWidth = 8;
+};
+function largeLine(){
+	lineWidth = 12;
+};
 
 //event handlers
 
@@ -147,9 +228,17 @@ function blueColor(){
 function startup() {
 
 //fixing this should be able to use only one event listener
+//handle line color changes
   red.addEventListener("click", redColor, false);
   green.addEventListener("click", greenColor, false);
   blue.addEventListener("click", blueColor, false);
+
+  
+  //handle line width changes
+  fourpx.addEventListener("click", smallLine, false);
+  
+  twelvepx.addEventListener("click", largeLine, false);
+  
 
   clearBtn.addEventListener("click", clear, false);  
   
@@ -188,7 +277,7 @@ function handleStart(evt) {
 
     
     ctx.beginPath();
-    ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
+    ctx.arc(touches[i].pageX, touches[i].pageY, lineWidth/2, 0, 2 * Math.PI, false);  // a circle at the start
     ctx.fillStyle = color;
     ctx.fill();
 
@@ -214,7 +303,7 @@ function handleMove(evt) {
       ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
       
       ctx.lineTo(touches[i].pageX, touches[i].pageY);
-      ctx.lineWidth = 4;
+      ctx.lineWidth = lineWidth;
       ctx.strokeStyle = color;
       ctx.stroke();
 
@@ -238,12 +327,12 @@ function handleEnd(evt) {
     var idx = ongoingTouchIndexById(touches[i].identifier);
 
     if (idx >= 0) {
-      ctx.lineWidth = 4;
+      ctx.lineWidth = lineWidth;
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
       ctx.lineTo(touches[i].pageX, touches[i].pageY);
-      ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4, 8, 8);  // and a square at the end
+      ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4,lineWidth/2, lineWidth/2);  // and a square at the end
       ongoingTouches.splice(idx, 1);  // remove it; we're done
     }
   }
@@ -284,5 +373,7 @@ function ongoingTouchIndexById(idToFind) {
 
 
 </script>
+
+
 </body>
 </html>
