@@ -17,37 +17,136 @@
 	<title>School Yard: Matching Game</title>
 
 
+<style>
+#container{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 
+}
+.side{
+	display: flex;
+	flex-direction: column;
+
+}
+div{
+	display: inline-block;
+	padding: 10px;
+	margin: 15px;
+	border: black solid 2px;
+}
+.card:hover{
+	background: yellow;
+	color: blue;
+	cursor: pointer;
+}
+.selected{
+	transform: scale(1.2);
+	border: red dashed 3px;
+}
+</style>
 </head>
 <body>
 
 <div id="container">
 
 
-	<div id = "leftSide">
+	<div id = "leftSide" class="side">
 
-		<div id="l-red" class="question card"></div>
+		<div id="l-red" class="question card left" title="apple">Apple</div>
 
-		<div id="l-green" class="question card"></div>
+		<div id="l-green" class="question card left" title="banana">Banana</div>
 
-		<div id="l-blue" class="question card"></div>
+		
 
 	</div>
 
 
 
-	<div id="rightSide">
+	<div id="rightSide" class="side">
 
-		<div id="r-red" class="answer card"></div>
+		<div  class="answer card right" title="apple" >APPLE</div>
 
-		<div id="r-green" class="answer card"></div>
+		<div  class="answer card right" title="banana">BANANA</div>
 
-		<div id="r-blue" class="answer card"></div>
 
 	</div>
 
 
 </div>
+
+
+<script>
+
+
+
+let test = document.getElementsByClassName("card");
+let cards = [...test];
+
+//apply event listener to every element with .card
+//event listener for click which toggles class type for "this" card
+for (let i=0; i<cards.length; i++){
+	cards[i].addEventListener("click", toggleClass, false);
+	cards[i].addEventListener("click", runGame, false);
+};
+
+
+//applies .selected to card element if called via above eventListener
+function toggleClass(){
+	this.classList.toggle("selected");
+};
+
+function removeToggledClasses(arr, rmclass){
+	for(let i=0; i<arr.length; i++){
+		if(arr[i].classList.contains(rmclass)){
+			arr[i].classList.remove(rmclass);
+		}
+	}
+};
+
+function checkAnswer(arr){
+	//check for exactly 1 selection from each .right and .left
+	let left =0;
+	let right=0;
+	let rightAns, leftAns;
+	//looping through arr capture items with .left and .right
+	//store these elements for later comparison
+	for(let i=0; i<arr.length; i++){
+		if(arr[i].classList.contains("left") && arr[i].classList.contains("selected")){
+			leftAns = arr[i];
+			left+=1;
+		}else if(arr[i].classList.contains("right") && arr[i].classList.contains("selected")){
+			rightAns = arr[i];
+			right+=1;
+		}
+	//if more than one choice from either .right or .left
+	//alert the user
+	//clear all the selected classes
+	//exit function
+		if(left > 1 || right > 1){
+			alert("CHOOSE ONLY ONE FROM EACH SIDE");
+			removeToggledClasses(arr, "selected");
+			return null;
+		}
+	}
+	//compare left and right choice elements for title equivalency
+	if (leftAns && rightAns){
+		if(leftAns.title == rightAns.title){
+			alert("MATCH");
+		}else{
+			removeToggledClasses(cards, "selected");
+			alert("SORRY NOT A MATCH")
+		}
+	}
+
+};
+
+function runGame(){
+	checkAnswer(cards);
+
+};
+
+</script>
 
 </body>
 </html>
