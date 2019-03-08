@@ -91,6 +91,27 @@ div{
 
 <script>
 
+let alphaArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p","q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+
+function createElements(arr){
+
+
+
+let result = arr.forEach(function(item){
+	let newDiv = document.createElement("DIV");
+	let newContent = document.createTextNode(item);
+
+	newDiv.appendChild(newContent);
+
+	let currentDiv = document.getElementById("leftSide");
+	document.body.insertBefore(newDiv, currentDiv);
+
+})
+};
+
+createElements(alphaArr);
+
+
 let score = 0;
 let tries = 0;
 
