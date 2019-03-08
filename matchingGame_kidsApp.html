@@ -18,15 +18,22 @@
 
 
 <style>
+html{
+	background-image: linear-gradient(rgba(255,0,0,0), rgba(255,0,0,1));
+	background-repeat: no-repeat;
+
+}
 #container{
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	height: 95vh;
 
 }
 .side{
 	display: flex;
 	flex-direction: column;
+	background: white;
 
 }
 div{
@@ -34,6 +41,9 @@ div{
 	padding: 10px;
 	margin: 15px;
 	border: black solid 2px;
+}
+.card{
+	background: green;
 }
 .card:hover{
 	background: yellow;
@@ -43,6 +53,9 @@ div{
 .selected{
 	transform: scale(1.2);
 	border: red dashed 3px;
+}
+.disabled{
+	display: none;
 }
 </style>
 </head>
@@ -78,7 +91,8 @@ div{
 
 <script>
 
-
+let score = 0;
+let tries = 0;
 
 let test = document.getElementsByClassName("card");
 let cards = [...test];
@@ -130,12 +144,26 @@ function checkAnswer(arr){
 		}
 	}
 	//compare left and right choice elements for title equivalency
+	//remove .selected and adjust tries and score
 	if (leftAns && rightAns){
 		if(leftAns.title == rightAns.title){
+			disabled(arr, "selected");
+			removeToggledClasses(cards, "selected");
+			score+=1;
+			tries+=1;
 			alert("MATCH");
 		}else{
 			removeToggledClasses(cards, "selected");
+			tries+=1;
 			alert("SORRY NOT A MATCH")
+		}
+	}
+};
+
+function disabled(arr, titleName){
+	for(let i=0; i<arr.length; i++){
+		if(arr[i].classList.contains(titleName)){
+			arr[i].classList.toggle("disabled");
 		}
 	}
 
