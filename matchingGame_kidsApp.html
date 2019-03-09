@@ -21,7 +21,12 @@
 html{
 	background-image: radial-gradient(rgba(200,0,50,0), rgba(200,0,50,1));
 	background-repeat: no-repeat;
+	box-sizing: border-box;
 
+}
+#homeBtn{
+	border-radius:4px;
+	background: rgba(50,255,100,0.5);
 }
 #container{
 	display: flex;
@@ -35,7 +40,7 @@ html{
 	display: inline-block;
 }
 h1{
-	max-width: 48%;
+	margin:0;
 }
 .side{
 	display: flex;
@@ -44,7 +49,7 @@ h1{
 	justify-content: space-between;
 	align-content: space-around;
 	
-	width:40%;
+	width:50%;
 
 }
 div{
@@ -80,6 +85,7 @@ div{
 
 	<div id="title" class="header">
 		<h1>Matching Game</h1>
+		<a href="index_kidsApp.html"><button id="homeBtn">Go Back</button></a>
 	</div>
 	
 	<div id="score" class="header">
