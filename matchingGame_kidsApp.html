@@ -19,31 +19,46 @@
 
 <style>
 html{
-	background-image: linear-gradient(rgba(255,0,0,0), rgba(255,0,0,1));
+	background-image: radial-gradient(rgba(200,0,50,0), rgba(200,0,50,1));
 	background-repeat: no-repeat;
 
 }
 #container{
 	display: flex;
 	flex-direction: row;
+	
 	justify-content: space-between;
 	height: 95vh;
 
 }
+.header{
+	display: inline-block;
+}
+h1{
+	max-width: 48%;
+}
 .side{
 	display: flex;
 	flex-direction: column;
-	background: white;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-content: space-around;
+	
+	width:40%;
 
 }
 div{
 	display: inline-block;
-	padding: 10px;
-	margin: 15px;
-	border: black solid 2px;
+	margin: 1px;
+	
 }
 .card{
-	background: green;
+	background: rgba(255,205,0,0.5);
+	padding:7px;
+	border-radius: 3px;
+	margin: auto;
+	min-width: 35px;
+	text-align: center;
 }
 .card:hover{
 	background: yellow;
@@ -61,14 +76,27 @@ div{
 </head>
 <body>
 
+<div id="header" >
+
+	<div id="title" class="header">
+		<h1>Matching Game</h1>
+	</div>
+	
+	<div id="score" class="header">
+		<span>Score</span>
+		<span>Tries:</span>
+	</div>
+
+
+</div>
+
 <div id="container">
 
 
 	<div id = "leftSide" class="side">
 
-		<div id="l-red" class="question card left" title="apple">Apple</div>
+		<span id="l-red"></span>
 
-		<div id="l-green" class="question card left" title="banana">Banana</div>
 
 		
 
@@ -78,9 +106,8 @@ div{
 
 	<div id="rightSide" class="side">
 
-		<div  class="answer card right" title="apple" >APPLE</div>
+		<span id="r-red"></span>
 
-		<div  class="answer card right" title="banana">BANANA</div>
 
 
 	</div>
@@ -93,23 +120,66 @@ div{
 
 let alphaArr = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p","q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
-function createElements(arr){
+function shuffle(array) {
+//Fisher Yates method
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    //walk backward through array
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    
+    //junk variable
+    temporaryValue = array[currentIndex];
+    //swap last position with randomly chosen
+    array[currentIndex] = array[randomIndex];
+    //place the item removed from last place
+    //into the place of the randomly selected element
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+};
 
 
 
-let result = arr.forEach(function(item){
+function createElements(arr, side){
+
+let target = document.getElementById("container");
+
+let temp = shuffle(arr);
+
+let result = temp.forEach(function(item){
 	let newDiv = document.createElement("DIV");
 	let newContent = document.createTextNode(item);
 
 	newDiv.appendChild(newContent);
+	newDiv.classList.toggle("card");
+	newDiv.title = item;
+	if(side =="l-red"){
+	newDiv.classList.toggle("left");
+	}else if(side=="r-red"){
+		newDiv.classList.toggle("right");
+	};
 
-	let currentDiv = document.getElementById("leftSide");
-	document.body.insertBefore(newDiv, currentDiv);
+	let sp2 = document.getElementById(side);
+	// Get a reference to the parent element
+	let parentDiv = sp2.parentNode;
+	
+	// Insert the new element into the DOM before sp2
+	parentDiv.insertBefore(newDiv, sp2);
 
 })
 };
 
-createElements(alphaArr);
+createElements(alphaArr, "l-red");
+
+createElements(alphaArr, "r-red");
 
 
 let score = 0;
@@ -117,6 +187,7 @@ let tries = 0;
 
 let test = document.getElementsByClassName("card");
 let cards = [...test];
+
 
 //apply event listener to every element with .card
 //event listener for click which toggles class type for "this" card
