@@ -32,7 +32,10 @@
 
   <body>
 
+
     <canvas></canvas>
+
+
 
     <script type = "text/javascript">
 
@@ -80,7 +83,7 @@
 
       };
 
-      var scaled_size = 32;// The size I want my sprites to be;
+      var scaled_size = 64;// The size I want my sprites to be;
       var sprite_size = 16;// The actual size of sprites / tiles in the tile_sheet image
       var columns   = 24;// columns and rows in map below
       var rows      = 24;
@@ -113,20 +116,23 @@
       var context = document.querySelector("canvas").getContext("2d");
 
       /* The width and height of the inside of the browser window */
-      var height = document.documentElement.clientHeight;
-      var width  = document.documentElement.clientWidth;
+      var height = window.innerHeight;
+      var width  = window.innerWidth;
 
       var player = new Player(100, 100);
+      
       var viewport = new Viewport(200, 200, 300, 300);
 
       var pointer = { x:0, y:0 };// The adjusted mouse position
+
+
 
       function loop() {// The game loop
 
         window.requestAnimationFrame(loop);
 
-          var height = document.documentElement.clientHeight;
-          var width  = document.documentElement.clientWidth;
+          var height = window.innerHeight;
+          var width  = window.innerWidth;
 
           /* Resize canvas on every frame */
           context.canvas.height = height;
